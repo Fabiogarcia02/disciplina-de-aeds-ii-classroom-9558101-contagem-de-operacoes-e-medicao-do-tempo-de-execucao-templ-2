@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.function.Consumer;
 
 /** 
  * MIT License
@@ -26,53 +27,80 @@ import java.util.Random;
  */
 
 public class App {
-    static final int[] TAMANHOS_TESTE_GRANDE =  { 31_250_000, 62_500_000, 125_000_000, 250_000_000, 500_000_000 };
-    static final int[] TAMANHOS_TESTE_MEDIO =   {     12_500,     25_000,      50_000,     100_000,     200_000 };
-    static final int[] TAMANHOS_TESTE_PEQUENO = {          3,          6,          12,          24,          48 };
-    static final double NANO_TO_MILLI = 1.0/1_000_000;
+
+    static final int[] TAMANHOS_TESTE_GRANDE = {
+        31_250_000,
+        62_500_000,
+        125_000_000,
+        250_000_000,
+        500_000_000
+    };
+
+    static final int[] TAMANHOS_TESTE_MEDIO = {
+        12_500,
+        25_000,
+        50_000,
+        100_000,
+        200_000
+    };
+
+    static final int[] TAMANHOS_TESTE_PEQUENO = {
+        3,
+        6,
+        12,
+        24,
+        48
+    };
+
+    static final double NANO_TO_MILLI = 1.0 / 1_000_000;
+
     static Random aleatorio = new Random(42);
+
     static long operacoes;
-    
+
     /**
-     * Código de teste 1. Este método...
-     * @param vetor Vetor com dados para teste.
-     * @return Uma resposta que significa....
+     * Código de teste 1.
      */
     static int codigo1(int[] vetor) {
         int resposta = 0;
+
         for (int i = 0; i < vetor.length; i += 2) {
             resposta += vetor[i] % 2;
             operacoes++;
         }
+
         return resposta;
     }
 
     /**
-     * Código de teste 2. Este método...
-     * @param vetor Vetor com dados para teste.
-     * @return Uma resposta que significa....
+     * Código de teste 2.
      */
     static int codigo2(int[] vetor) {
         int contador = 0;
+
         for (int k = (vetor.length - 1); k > 0; k /= 2) {
             for (int i = 0; i <= k; i++) {
                 contador++;
             }
         }
+
         return contador;
     }
 
     /**
-     * Código de teste 3. Este método...
-     * @param vetor Vetor com dados para teste.
+     * Código de teste 3.
      */
     static void codigo3(int[] vetor) {
         for (int i = 0; i < vetor.length - 1; i++) {
+
             int menor = i;
+
             for (int j = i + 1; j < vetor.length; j++) {
+
                 if (vetor[j] < vetor[menor])
                     menor = j;
             }
+
             int temp = vetor[i];
             vetor[i] = vetor[menor];
             vetor[menor] = temp;
@@ -80,147 +108,136 @@ public class App {
     }
 
     /**
-     * Código de teste 4 (recursivo). Este método...
-     * @param n Ponto inicial do algoritmo
-     * @return Um inteiro que significa...
+     * Código de teste 4 (recursivo).
      */
     static int codigo4(int n) {
+
         if (n <= 2)
             return 1;
         else
             return codigo4(n - 1) + codigo4(n - 2);
     }
 
-  static int[] bubblesort(int[] vetor) {
-    int valorref = vetor.length - 1;
-    operacoes = 0;
+    /**
+     * Bubble Sort.
+     */
+    static int[] bubblesort(int[] vetor) {
 
-    for (int i = valorref; i > 0; i--) {
+        int valorref = vetor.length - 1;
 
-        for (int j = 0; j < i; j++) {
+        operacoes = 0;
 
-            operacoes++; // conta a comparação
+        for (int i = valorref; i > 0; i--) {
 
-            if (vetor[j] > vetor[j + 1]) {
-                int comparador = vetor[j];
-                vetor[j] = vetor[j + 1];
-                vetor[j + 1] = comparador;
+            for (int j = 0; j < i; j++) {
 
-                operacoes++; // conta a troca
+                operacoes++;
+
+                if (vetor[j] > vetor[j + 1]) {
+
+                    int comparador = vetor[j];
+
+                    vetor[j] = vetor[j + 1];
+
+                    vetor[j + 1] = comparador;
+
+                    operacoes++;
+                }
             }
         }
+
+        return vetor;
     }
-
-    return vetor;
-}
-
-
-
-
-
-
-
-
-
-
 
     /**
-     * Gerador de vetores aleatórios de tamanho pré-definido. 
-     * @param tamanho Tamanho do vetor a ser criado.
-     * @return Vetor com dados aleatórios, com valores entre 1 e (tamanho/2), desordenado.
+     * Gerador de vetores aleatórios.
      */
     static int[] gerarVetor(int tamanho) {
+
         int[] vetor = new int[tamanho];
+
         for (int i = 0; i < tamanho; i++) {
-            vetor[i] = aleatorio.nextInt(1, tamanho/2);
+
+            vetor[i] = aleatorio.nextInt(1, tamanho / 2);
         }
-        return vetor;      
+
+        return vetor;
     }
-    
+
+    /**
+     * Método responsável por testar uma função em vários tamanhos de vetor.
+     */
+    public static void testavetores(
+            int[] tamanhosVetores,
+            Consumer<int[]> funcao) {
+
+        for (int tamanho : tamanhosVetores) {
+
+            int[] vetor = gerarVetor(tamanho);
+
+            operacoes = 0;
+
+            long inicio = System.nanoTime();
+
+            funcao.accept(vetor);
+
+            long termino = System.nanoTime();
+
+            double duracao =
+                    (double) (termino - inicio) * NANO_TO_MILLI;
+
+            System.out.println(
+                    "Tamanho do vetor: "
+                    + tamanho
+                    + ", Operações: "
+                    + operacoes
+                    + ", Tempo: "
+                    + duracao
+                    + " ms"
+            );
+        }
+    }
+
     public static void main(String[] args) {
-        
 
-        System.out.println("gerar vetor ");
-        System.out.println("codigo 1 digete 1 e dois digite o 2");
-        int opcao=3;
-        long inicio,termino;
-        double duracao;
-        if(opcao==1){
-        for(int i=0;i<TAMANHOS_TESTE_GRANDE.length;i++){
-            int[]novo=  gerarVetor(TAMANHOS_TESTE_GRANDE[i]);
-            System.out.println("vetor grande "+i+" codigo1 ");
-            operacoes=0;
-            inicio=System.nanoTime();
-            codigo1(novo);
-            termino=System.nanoTime();
-            duracao=(double)(termino-inicio)*NANO_TO_MILLI;
-            System.out.println("tamanho do vetor : "+ novo.length);
-            System.out.println("quantidade de operação : "+operacoes);
-            System.out.println("tempo por operação : "+duracao);
+        int opcao = 4;
+
+        if (opcao == 1) {
+
+            System.out.println("\n===== CÓDIGO 1 =====");
+
+            testavetores(
+                    TAMANHOS_TESTE_GRANDE,
+                    vetor -> codigo1(vetor)
+            );
+
+        } else if (opcao == 2) {
+
+            System.out.println("\n===== CÓDIGO 2 =====");
+
+            testavetores(
+                    TAMANHOS_TESTE_GRANDE,
+                    vetor -> codigo2(vetor)
+            );
+
+        } else if (opcao == 3) {
+
+            System.out.println("\n===== CÓDIGO 3 =====");
+
+            testavetores(
+                    TAMANHOS_TESTE_MEDIO,
+                    vetor -> codigo3(vetor)
+            );
+
+        } else if (opcao == 4) {
+
+            System.out.println("\n===== BUBBLE SORT =====");
+
+            testavetores(
+                    TAMANHOS_TESTE_PEQUENO,
+                    vetor -> bubblesort(vetor)
+            );
         }
-    }else if(opcao==2){
-    for(int i=0;i<TAMANHOS_TESTE_GRANDE.length;i++){
-            int[]novo=  gerarVetor(TAMANHOS_TESTE_GRANDE[i]);
-            System.out.println("vetor grande "+i+" codigo2 ");
-            operacoes=0;
-            inicio=System.nanoTime();
-            codigo2(novo);
-            termino=System.nanoTime();
-            duracao=(double)(termino-inicio)*NANO_TO_MILLI;
-            System.out.println("tamanho do vetor : "+ novo.length);
-            System.out.println("quantidade de operação : "+operacoes);
-            System.out.println("tempo por operação : "+duracao);
-        }
-    }else if(opcao==3){
-        for(int i=0;i<TAMANHOS_TESTE_MEDIO.length;i++){
-            int[]novo=  gerarVetor(TAMANHOS_TESTE_MEDIO[i]);
-            System.out.println("vetor grande "+i+" codigo3 ");
-            operacoes=0;
-            inicio=System.nanoTime();
-            codigo1(novo);
-            termino=System.nanoTime();
-            duracao=(double)(termino-inicio)*NANO_TO_MILLI;
-            System.out.println("tamanho do vetor : "+ novo.length);
-            System.out.println("quantidade de operação : "+operacoes);
-            System.out.println("tempo por operação : "+duracao);
-        }
-
-    }else if (opcao == 4) {
-
-    for (int i = 0; i < TAMANHOS_TESTE_PEQUENO.length; i++) {
-
-        int[] novo = gerarVetor(TAMANHOS_TESTE_PEQUENO[i]);
-
-        System.out.println("\n==============================");
-        System.out.println("BUBBLE SORT");
-        System.out.println("Tamanho do vetor: " + novo.length);
-
-        System.out.print("Vetor antes: ");
-        for (int j = 0; j < novo.length; j++) {
-            System.out.print(novo[j] + " ");
-        }
-
-        inicio = System.nanoTime();
-
-        bubblesort(novo);
-
-        termino = System.nanoTime();
-
-        duracao = (double) (termino - inicio) * NANO_TO_MILLI;
-
-        System.out.print("\nVetor depois: ");
-        for (int j = 0; j < novo.length; j++) {
-            System.out.print(novo[j] + " ");
-        }
-
-        System.out.println("\nQuantidade de operações: " + operacoes);
-        System.out.println("Tempo: " + duracao + " ms");
     }
 }
 
-Para testar
-
-
-    
-}
-}
