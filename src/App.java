@@ -164,6 +164,31 @@ public class App {
         return vetor;
     }
 
+    //Inserção
+     
+        static  int [] insertionSort(int[] vetor) {
+            for(int i = 1; i < vetor.length; i++){
+                 int referencia = vetor[i];
+
+                for( int j = i; j > 0 && vetor[j ] < vetor[j-1]; j--){
+                    
+                    if(referencia< vetor[j]){
+                        vetor[j+1]= vetor[j];
+
+                    }else{
+                         break;
+                    }
+
+                    vetor[j+1]= referencia;
+                }
+            }
+
+             return vetor;
+        }
+        
+         
+          
+
     /**
      * Método responsável por testar uma função em vários tamanhos de vetor.
      */
@@ -236,6 +261,16 @@ public class App {
             testavetores(
                     TAMANHOS_TESTE_PEQUENO,
                     vetor -> bubblesort(vetor)
+            );
+        }
+
+        else if (opcao == 5) {
+
+            System.out.println("\n===== INSERTION SORT =====");
+
+            testavetores(
+                    TAMANHOS_TESTE_PEQUENO,
+                    vetor -> insertionSort(vetor)
             );
         }
     }
