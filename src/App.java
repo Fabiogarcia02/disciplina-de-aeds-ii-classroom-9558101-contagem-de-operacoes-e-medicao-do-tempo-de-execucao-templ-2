@@ -170,16 +170,8 @@ public class App {
             for(int i = 1; i < vetor.length; i++){
                  int referencia = vetor[i];
 
-                for( int j = i-j; j >= 0 && vetor[j]> referencia; j--){
-                    
-                    if(referencia< vetor[j]){
-                        vetor[j+1]= vetor[j];
-
-                    }else{
-                         break;
-                    }
-
-                    vetor[j+1]= referencia;
+                for( int j = i-j; j >= 0 &&  referencia< vetor[j]; j--){
+                     vetor[j+1]= vetor[j];
                 }
             }
 
